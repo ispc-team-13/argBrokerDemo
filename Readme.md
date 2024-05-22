@@ -7,5 +7,5 @@
  del Mercado de Valores de Buenos Aires (Merval).
 
 ## Team:
- Nahuel Argandoña; 🇦🇷 - 🐣 [Mi Github](https://github.com/Aubar48)
- Gastón Cane: Ar - [Mi Github](https://github.com/GasmauC)
+ ## Nahuel Argandoña; 🇦🇷 - 🐣 [Mi Github](https://github.com/Aubar48)
+ ## Gastón Cane: Ar - [Mi Github](https://github.com/GasmauC)
