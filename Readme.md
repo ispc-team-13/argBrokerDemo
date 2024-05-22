@@ -8,7 +8,7 @@
 
  Trabajo Integrador correspondiente al Modulo Programador de la Tecnicatura Superior en Desarrollo de Software perteneciente al Intituto Superior Politécnico de Córdoba.
 
-## Team:
+## Team 13:
  ## Nahuel Argandoña; 🇦🇷 - 🐣 [Mi Github](https://github.com/Aubar48)
  ## Gastón Cane: Ar - [Mi Github](https://github.com/GasmauC)
  ## Eric Heredia; CBA - ARG [Mi Github](https://github.com/Eric-Heredia)
