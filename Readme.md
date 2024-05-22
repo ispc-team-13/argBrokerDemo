@@ -8,3 +8,4 @@
 
 ## Team:
  Nahuel Argandoña; 🇦🇷 - 🐣 [Mi Github](https://github.com/Aubar48)
+ Gastón Cane: Ar - [Mi Github](https://github.com/GasmauC)
