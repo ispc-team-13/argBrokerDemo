@@ -6,9 +6,9 @@
  entre los inversores (personas físicas, empresas o instituciones) y otros inversores dentro
  del Mercado de Valores de Buenos Aires (Merval).
 
- Trabajo Integrador correspondiente al Modulo Programador de la Tecnicatura Superior en Desarrollo de Software perteneciente al Intituto Superior Politécnico de Córdoba.
+ Trabajo Integrador correspondiente al Modulo Programador de la Tecnicatura Superior en Desarrollo de Software, trayecto de formación perteneciente al Intituto Superior Politécnico de Córdoba.
 
 ## Team 13:
  ## Nahuel Argandoña; 🇦🇷 - 🐣 [Mi Github](https://github.com/Aubar48)
  ## Gastón Cane: Ar - [Mi Github](https://github.com/GasmauC)
- ## Eric Heredia; CBA - ARG [Mi Github](https://github.com/Eric-Heredia)
+ ## Eric Heredia; Cba - Arg [Mi Github](https://github.com/Eric-Heredia)
