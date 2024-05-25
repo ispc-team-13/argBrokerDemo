@@ -1,47 +1,63 @@
-CREATE DATABASE nombre_de_tu_base_de_datos;
+-- Crear la base de datos
+CREATE DATABASE ARGBrokerDemo;
+USE ARGBrokerDemo;
 
-USE nombre_de_tu_base_de_datos;
-
+-- Crear la tabla Usuario
 CREATE TABLE Usuario (
-    id INT PRIMARY KEY,
-    nombre VARCHAR(100),
-    email VARCHAR(100),
-    saldo_inicial DECIMAL(10,2)
+    ID_Usuario INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Apellido VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    Saldo_Inicial DECIMAL(10, 2) DEFAULT 1000000.00,
+    Saldo_Actual DECIMAL(10, 2) DEFAULT 1000000.00,
+    Perfil_Inversor ENUM('conservador', 'medio', 'agresivo') NOT NULL
 );
 
+-- Crear la tabla Acción
 CREATE TABLE Accion (
-    simbolo VARCHAR(50) PRIMARY KEY,
-    nombre_empresa VARCHAR(100),
-    ultimo_operado DECIMAL(10,2),
-    cantidad_compra_diaria INT,
-    precio_compra_actual DECIMAL(10,2),
-    precio_venta_actual DECIMAL(10,2),
-    cantidad_venta_diaria INT,
-    apertura DECIMAL(10,2),
-    minimo_diario DECIMAL(10,2),
-    maximo_diario DECIMAL(10,2),
-    ultimo_cierre DECIMAL(10,2)
+    ID_Accion INT AUTO_INCREMENT PRIMARY KEY,
+    Simbolo VARCHAR(10) NOT NULL UNIQUE,
+    Nombre_Empresa VARCHAR(100) NOT NULL
 );
 
+-- Crear la tabla Transacción
 CREATE TABLE Transaccion (
-    id INT PRIMARY KEY,
-    usuario_id INT,
-    accion_simbolo VARCHAR(50),
-    tipo VARCHAR(10),
-    cantidad INT,
-    precio DECIMAL(10,2),
-    comision DECIMAL(10,2),
-    FOREIGN KEY (usuario_id) REFERENCES Usuario(id),
-    FOREIGN KEY (accion_simbolo) REFERENCES Accion(simbolo)
+    ID_Transaccion INT AUTO_INCREMENT PRIMARY KEY,
+    ID_Usuario INT NOT NULL,
+    ID_Accion INT NOT NULL,
+    Fecha DATETIME NOT NULL,
+    Tipo ENUM('compra', 'venta') NOT NULL,
+    Cantidad INT NOT NULL,
+    Precio DECIMAL(10, 2) NOT NULL,
+    Comision DECIMAL(5, 2) NOT NULL,
+    FOREIGN KEY (ID_Usuario) REFERENCES Usuario(ID_Usuario),
+    FOREIGN KEY (ID_Accion) REFERENCES Accion(ID_Accion)
 );
 
+-- Crear la tabla Cotización
+CREATE TABLE Cotizacion (
+    ID_Cotizacion INT AUTO_INCREMENT PRIMARY KEY,
+    ID_Accion INT NOT NULL,
+    Ultimo_Operado DECIMAL(10, 2),
+    Cantidad_Compra_Diaria INT,
+    Precio_Compra_Actual DECIMAL(10, 2),
+    Precio_Venta_Actual DECIMAL(10, 2),
+    Cantidad_Venta_Diaria INT,
+    Apertura DECIMAL(10, 2),
+    Minimo_Diario DECIMAL(10, 2),
+    Maximo_Diario DECIMAL(10, 2),
+    Ultimo_Cierre DECIMAL(10, 2),
+    FOREIGN KEY (ID_Accion) REFERENCES Accion(ID_Accion)
+);
+
+-- Crear la tabla Portafolio
 CREATE TABLE Portafolio (
-    usuario_id INT,
-    simbolo VARCHAR(50),
-    cantidad INT,
-    total_invertido DECIMAL(10,2),
-    saldo DECIMAL(10,2),
-    ganancia_perdida DECIMAL(10,2),
-    FOREIGN KEY (usuario_id) REFERENCES Usuario(id),
-    FOREIGN KEY (simbolo) REFERENCES Accion(simbolo)
+    ID_Portafolio INT AUTO_INCREMENT PRIMARY KEY,
+    ID_Usuario INT NOT NULL,
+    ID_Accion INT NOT NULL,
+    Cantidad INT NOT NULL,
+    Valor_Comprometido DECIMAL(10, 2) NOT NULL,
+    Ganancia_Perdida DECIMAL(10, 2),
+    FOREIGN KEY (ID_Usuario) REFERENCES Usuario(ID_Usuario),
+    FOREIGN KEY (ID_Accion) REFERENCES Accion(ID_Accion)
 );
