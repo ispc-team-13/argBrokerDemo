@@ -13,3 +13,4 @@
  ## Gastón Cane: Ar - [Mi Github](https://github.com/GasmauC)
  ## Eric Heredia; Cba - Arg [Mi Github](https://github.com/Eric-Heredia)
  ## Agustin Cheli; Cba - Arg [Mi Github](https://github.com/AgustinCheli)
+ ## Sofia Auzqui; Cba - Arg [Mi Github](https://github.com/Sofyauzqui)
