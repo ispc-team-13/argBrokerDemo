@@ -59,7 +59,7 @@
                 <mxCell id="38" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;fontSize=13;" parent="36" vertex="1">
                     <mxGeometry y="212" width="200" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="39" value="+consultarCotizacion(accion)" style="text;strokeColor=#3A5431;fillColor=#6d8764;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=1;fontSize=13;fontColor=#ffffff;" parent="36" vertex="1">
+                <mxCell id="39" value="+consultarCotizacion()" style="text;strokeColor=#3A5431;fillColor=#6d8764;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=1;fontSize=14;fontColor=#ffffff;" parent="36" vertex="1">
                     <mxGeometry y="220" width="200" height="26" as="geometry"/>
                 </mxCell>
                 <mxCell id="41" value="" style="endArrow=classic;html=1;fontSize=14;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="12" edge="1">
@@ -98,7 +98,7 @@
                 <mxCell id="48" value="Transaccion" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;strokeWidth=1;fontSize=13;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
                     <mxGeometry x="275" y="50" width="200" height="240" as="geometry"/>
                 </mxCell>
-                <mxCell id="49" value="-transaccionId:int&#10;-Tipo:string&#10;-usario&#10;-accion&#10;-precio:float&#10;-fecha:datetime&#10;-cantidad:int" style="text;strokeColor=#314354;fillColor=#647687;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=1;fontSize=14;fontColor=#ffffff;" parent="48" vertex="1">
+                <mxCell id="49" value="-transaccionId:int&#10;-tipo:string&#10;-usario&#10;-accion&#10;-precio:float&#10;-fecha:datetime&#10;-cantidad:int" style="text;strokeColor=#314354;fillColor=#647687;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=1;fontSize=14;fontColor=#ffffff;" parent="48" vertex="1">
                     <mxGeometry y="26" width="200" height="134" as="geometry"/>
                 </mxCell>
                 <mxCell id="50" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;fontSize=13;" parent="48" vertex="1">
