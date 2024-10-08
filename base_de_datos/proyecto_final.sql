@@ -9,6 +9,7 @@ CREATE TABLE Usuario (
     Apellido VARCHAR(100) NOT NULL,
     Email VARCHAR(100) NOT NULL UNIQUE,
     Contrasena VARCHAR(255) NOT NULL, 
+    Cuil VARCHAR(20) NOT NULL UNIQUE,
     Saldo_Inicial DECIMAL(10, 2) DEFAULT 1000000.00,
     Saldo_Actual DECIMAL(10, 2) DEFAULT 1000000.00,
     Perfil_Inversor ENUM('conservador', 'medio', 'agresivo') NOT NULL
