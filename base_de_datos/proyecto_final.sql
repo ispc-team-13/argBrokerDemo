@@ -2,12 +2,13 @@
 CREATE DATABASE ARGBrokerDemo;
 USE ARGBrokerDemo;
 
--- Crear la tabla Usuario
+-- Crear la tabla Usuario con el campo de contraseña
 CREATE TABLE Usuario (
     ID_Usuario INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
     Apellido VARCHAR(100) NOT NULL,
     Email VARCHAR(100) NOT NULL UNIQUE,
+    Contrasena VARCHAR(255) NOT NULL, 
     Saldo_Inicial DECIMAL(10, 2) DEFAULT 1000000.00,
     Saldo_Actual DECIMAL(10, 2) DEFAULT 1000000.00,
     Perfil_Inversor ENUM('conservador', 'medio', 'agresivo') NOT NULL
