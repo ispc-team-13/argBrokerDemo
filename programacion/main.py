@@ -1,6 +1,7 @@
 import mysql.connector
 from datetime import datetime
 import sys  # Importamos sys para cerrar la aplicación
+from dao.portafolio_dao import PortafolioDAO
 
 # Configuración de la conexión a la base de datos
 
@@ -126,65 +127,120 @@ def mostrar_acciones():
     conn.close()
 
 # Función para realizar una transacción
-
-
 def realizar_transaccion(user_id):
     mostrar_acciones()
 
-    accion_id = int(
-        input("\nIngresa el ID de la acción que deseas comprar/vender: "))
+    accion_id = int(input("\nIngresa el ID de la acción que deseas comprar/vender: "))
     tipo = input("¿Deseas comprar o vender? (compra/venta): ").lower()
     cantidad = int(input("Ingresa la cantidad: "))
 
     conn = connect_db()
     cursor = conn.cursor()
 
-    # Obtener el precio de la acción
-    cursor.execute(
-        "SELECT c.Ultimo_Operado FROM Cotizacion c WHERE c.ID_Accion = %s", (accion_id,))
-    precio = cursor.fetchone()[0]
+    try:
+        # Obtener el precio de la acción
+        cursor.execute("SELECT c.Ultimo_Operado FROM Cotizacion c WHERE c.ID_Accion = %s", (accion_id,))
+        precio = cursor.fetchone()
+        cursor.fetchall()  # Limpiar cualquier resultado pendiente
 
-    comision = precio * 0.01  # Supongamos una comisión del 1%
+        if not precio:
+            print("No se encontró la acción.")
+            return
+        
+        precio = precio[0]
+        comision = float(precio) * 0.01  # Comisión del 1%
 
-    if tipo == 'compra':
-        cursor.execute("INSERT INTO Transaccion (ID_Usuario, ID_Accion, Fecha, Tipo, Cantidad, Precio, Comision) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                       (user_id, accion_id, datetime.now(), 'compra', cantidad, precio, comision))
-        print("Compra realizada con éxito.")
+        if tipo == 'compra':
+            # Verificar el saldo del usuario
+            cursor.execute("SELECT Saldo_Actual FROM Usuario WHERE ID_Usuario = %s", (user_id,))
+            saldo = cursor.fetchone()
+            cursor.fetchall()  # Limpiar cualquier resultado pendiente
 
-        # Actualizar el saldo
-        cursor.execute("UPDATE Usuario SET Saldo_Actual = Saldo_Actual - %s WHERE ID_Usuario = %s",
-                       (precio * cantidad + comision, user_id))
+            if not saldo:
+                print("Error al obtener el saldo del usuario.")
+                return
+            
+            saldo = saldo[0]
+            total_compra = float(precio * cantidad) + comision
 
-    elif tipo == 'venta':
-        cursor.execute("INSERT INTO Transaccion (ID_Usuario, ID_Accion, Fecha, Tipo, Cantidad, Precio, Comision) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                       (user_id, accion_id, datetime.now(), 'venta', cantidad, precio, comision))
-        print("Venta realizada con éxito.")
+            if saldo >= total_compra:
+                cursor.execute(
+                    "INSERT INTO Transaccion (ID_Usuario, ID_Accion, Fecha, Tipo, Cantidad, Precio, Comision) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                    (user_id, accion_id, datetime.now(), 'compra', cantidad, precio, comision)
+                )
+                print("Compra realizada con éxito.")
 
-        # Actualizar el saldo
-        cursor.execute("UPDATE Usuario SET Saldo_Actual = Saldo_Actual + %s WHERE ID_Usuario = %s",
-                       (precio * cantidad - comision, user_id))
+                # Actualizar el saldo del usuario
+                cursor.execute("UPDATE Usuario SET Saldo_Actual = Saldo_Actual - %s WHERE ID_Usuario = %s",
+                               (total_compra, user_id))
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+                # Actualizar el portafolio del usuario
+                cursor.execute(
+                    "INSERT INTO Portafolio (ID_Usuario, ID_Accion, Cantidad) VALUES (%s, %s, %s) "
+                    "ON DUPLICATE KEY UPDATE Cantidad = Cantidad + %s",
+                    (user_id, accion_id, cantidad, cantidad)
+                )
+            else:
+                print("Saldo insuficiente para realizar la compra.")
+
+        elif tipo == 'venta':
+            # Verificar acciones disponibles en el portafolio
+            cursor.execute("SELECT Cantidad FROM Portafolio WHERE ID_Usuario = %s AND ID_Accion = %s",
+                           (user_id, accion_id))
+            acciones_disponibles = cursor.fetchone()
+            cursor.fetchall()  # Limpiar cualquier resultado pendiente
+
+            if not acciones_disponibles or acciones_disponibles[0] < cantidad:
+                print("No tienes suficientes acciones para vender.")
+                return
+
+            cursor.execute(
+                "INSERT INTO Transaccion (ID_Usuario, ID_Accion, Fecha, Tipo, Cantidad, Precio, Comision) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (user_id, accion_id, datetime.now(), 'venta', cantidad, precio, comision)
+            )
+            print("Venta realizada con éxito.")
+
+            total_venta = float(precio * cantidad) - comision
+            cursor.execute("UPDATE Usuario SET Saldo_Actual = Saldo_Actual + %s WHERE ID_Usuario = %s",
+                           (total_venta, user_id))
+
+            # Actualizar la cantidad de acciones en el portafolio
+            cursor.execute(
+                "UPDATE Portafolio SET Cantidad = Cantidad - %s WHERE ID_Usuario = %s AND ID_Accion = %s",
+                (cantidad, user_id, accion_id)
+            )
+
+            # Eliminar de portafolio si la cantidad es cero
+            cursor.execute(
+                "DELETE FROM Portafolio WHERE ID_Usuario = %s AND ID_Accion = %s AND Cantidad <= 0",
+                (user_id, accion_id)
+            )
+
+        # Confirmar cambios
+        conn.commit()
+    except mysql.connector.Error as e:
+        print("Error en la base de datos:", e)
+        conn.rollback()  # Rollback en caso de error
+    finally:
+        cursor.close()
+        conn.close()
 
 # Función para mostrar el portafolio
-
-
 def mostrar_portafolio(user_id):
-    conn = connect_db()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT p.ID_Portafolio, a.Simbolo, p.Cantidad, p.Valor_Comprometido, p.Ganancia_Perdida FROM Portafolio p JOIN Accion a ON p.ID_Accion = a.ID_Accion WHERE p.ID_Usuario = %s", (user_id,))
-    portafolio = cursor.fetchall()
+    portafolio_items = PortafolioDAO.get_portafolio_by_user_id(user_id)
 
     print("\nTu Portafolio:")
-    for item in portafolio:
-        print(f"ID: {item[0]}, Símbolo: {item[1]}, Cantidad: {
-              item[2]}, Valor Comprometido: {item[3]}, Ganancia/Pérdida: {item[4]}")
+    for item in portafolio_items:
+        print(f"ID: {item['ID_Portafolio']}")
+        print(f"Símbolo: {item['Simbolo']}")
+        print(f"Nombre de la empresa: {item['Nombre_Empresa']}")
+        print(f"Cantidad de acciones: {item['Cantidad']}")
+        print(f"Precio Compra Actual: {item['Precio_Compra_Actual']}")
+        print(f"Precio Venta Actual: {item['Precio_Venta_Actual']}")
+        print(f"Valor Comprometido: {item['Valor_Comprometido']}")
+        print(f"Ganancia/Pérdida: {item['Ganancia_Perdida']}")
+        print("-" * 50)
 
-    cursor.close()
-    conn.close()
 
 # Función principal
 
