@@ -2,101 +2,10 @@ import mysql.connector
 from datetime import datetime
 import sys  # Importamos sys para cerrar la aplicación
 from dao.portafolio_dao import PortafolioDAO
-
-# Configuración de la conexión a la base de datos
-
-
-def connect_db():
-    return mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password='root',
-        database='ARGBrokerDemo'
-    )
-
-# Función para iniciar sesión
-
-
-def login():
-    email = input("Ingresa tu email: ")
-    contrasena = input("Ingresa tu contraseña: ")
-
-    conn = connect_db()
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "SELECT * FROM Usuario WHERE Email = %s AND Contrasena = %s", (email, contrasena))
-    user = cursor.fetchone()
-
-    cursor.close()
-    conn.close()
-
-    if user:
-        print(f"Bienvenido, {user[1]} {user[2]}!")
-        return user  # Retorna todos los datos del usuario
-    else:
-        print("Credenciales incorrectas. Inténtalo de nuevo.")
-        return None
-
-# Función para registrar un nuevo usuario
-
-
-def registrar_usuario():
-    nombre = input("Ingresa tu nombre: ")
-    apellido = input("Ingresa tu apellido: ")
-    email = input("Ingresa tu email: ")
-    contrasena = input("Ingresa tu contraseña: ")
-    saldo_inicial = 1000.0  # Saldo inicial para nuevos usuarios
-
-    conn = connect_db()
-    cursor = conn.cursor()
-
-    # Insertar el nuevo usuario en la base de datos
-    try:
-        cursor.execute("INSERT INTO Usuario (Nombre, Apellido, Email, Contrasena, Saldo_Actual) VALUES (%s, %s, %s, %s, %s)",
-                       (nombre, apellido, email, contrasena, saldo_inicial))
-        conn.commit()
-        print("Registro exitoso. ¡Ahora puedes iniciar sesión!")
-    except mysql.connector.Error as err:
-        print(f"Error al registrar el usuario: {err}")
-    finally:
-        cursor.close()
-        conn.close()
-
-# Función para recuperar la contraseña
-
-
-def recuperar_contrasena():
-    intentos = 0  # Contador de intentos
-
-    while intentos < 3:
-        email = input("Ingresa tu email para recuperar la contraseña: ")
-
-        conn = connect_db()
-        cursor = conn.cursor()
-
-        cursor.execute(
-            "SELECT Contrasena FROM Usuario WHERE Email = %s", (email,))
-        contrasena = cursor.fetchone()
-
-        cursor.close()
-        conn.close()
-
-        if contrasena:
-            print(f"Tu contraseña es: {contrasena[0]}")
-            return  # Sale de la función si se encontró la contraseña
-        else:
-            print("No se encontró ningún usuario con ese email.")
-            intentos += 1
-            if intentos < 3:
-                print(f"Intento {intentos} de 3.")
-
-    print("Demasiados intentos fallidos. La aplicación se cerrará.")
-    sys.exit()  # Cierra la aplicación
+from database import connect_db  # Importa la función de conexión
+from dao.usuario_dao import UsuarioDAO
 
 # Función para mostrar los datos de la cuenta
-
-
 def mostrar_datos_cuenta(user):
     print("\nDatos de la cuenta:")
     print(f"Nombre: {user[1]}")
@@ -107,8 +16,8 @@ def mostrar_datos_cuenta(user):
     print(f"Saldo saldo actual: {user[7]}")
     print(f"Tipo de perfil: {user[8]}")
 
-# Función para mostrar acciones y cotizaciones
 
+# Función para mostrar acciones y cotizaciones
 
 def mostrar_acciones():
     conn = connect_db()
