@@ -1,5 +1,6 @@
 import mysql.connector
 from models.transaccion import Transaccion
+from colorama import Fore, Style, init
 
 class TransaccionDAO:
     def __init__(self, db_config):
@@ -15,7 +16,8 @@ class TransaccionDAO:
             cursor.execute(sql, (id_usuario, id_accion, fecha, tipo, cantidad, precio, comision))
             self.connection.commit()
         except mysql.connector.Error as err:
-            print(f"Error al crear la transacción: {err}")
+            print(Fore.RED + f"\nError al crear la transacción: {err}" + Style.RESET_ALL)
+
             self.connection.rollback()
         finally:
             cursor.close()
@@ -31,7 +33,8 @@ class TransaccionDAO:
                 return Transaccion(*result)
             return None
         except mysql.connector.Error as err:
-            print(f"Error al obtener la transacción: {err}")
+            print(Fore.RED + f"\nError al obtener la transacción: {err}" + Style.RESET_ALL)
+
             return None
         finally:
             cursor.close()
@@ -45,7 +48,8 @@ class TransaccionDAO:
             cursor.execute(sql, (id_usuario, id_accion, fecha, tipo, cantidad, precio, comision, id_transaccion))
             self.connection.commit()
         except mysql.connector.Error as err:
-            print(f"Error al actualizar la transacción: {err}")
+            print(Fore.RED + f"\nError al actualizar la transacción: {err}" + Style.RESET_ALL)
+
             self.connection.rollback()
         finally:
             cursor.close()
@@ -58,7 +62,8 @@ class TransaccionDAO:
             cursor.execute(sql, (id_transaccion,))
             self.connection.commit()
         except mysql.connector.Error as err:
-            print(f"Error al eliminar la transacción: {err}")
+            print(Fore.RED + f"\nError al eliminar la transacción: {err}" + Style.RESET_ALL)
+
             self.connection.rollback()
         finally:
             cursor.close()

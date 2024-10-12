@@ -3,6 +3,7 @@ import mysql.connector
 from models.accion import Accion
 from database import connect_db  # Importa la función de conexión
 from datetime import datetime  # Importar datetime para la fecha de las transacciones
+from colorama import Fore, Style, init
 
 
 class AccionDAO:
@@ -17,7 +18,8 @@ class AccionDAO:
         )
         acciones = cursor.fetchall()
 
-        print("\nAcciones disponibles:")
+        print(Fore.MAGENTA + "\nAcciones disponibles:" + Style.RESET_ALL)
+
         for accion in acciones:
             print(f"ID: {accion[0]}, Símbolo: {accion[1]}, Empresa: {accion[2]}, Último Operado: {accion[3]}")
 
@@ -41,7 +43,8 @@ class AccionDAO:
             precio = cursor.fetchone()
 
             if not precio:
-                print("No se encontró la acción.")
+                print(Fore.RED + "\nNo se encontró la acción." + Style.RESET_ALL)
+
                 return
 
             precio = precio[0]
@@ -53,7 +56,8 @@ class AccionDAO:
                 saldo = cursor.fetchone()
 
                 if not saldo:
-                    print("Error al obtener el saldo del usuario.")
+                    print(Fore.RED + "\nError al obtener el saldo del usuario." + Style.RESET_ALL)
+
                     return
 
                 saldo = saldo[0]
@@ -64,7 +68,7 @@ class AccionDAO:
                         "INSERT INTO Transaccion (ID_Usuario, ID_Accion, Fecha, Tipo, Cantidad, Precio, Comision) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                         (user_id, accion_id, datetime.now(), 'compra', cantidad, precio, comision)
                     )
-                    print("Compra realizada con éxito.")
+                    print(Fore.YELLOW + "\nCompra realizada con éxito." + Style.RESET_ALL)
 
                     # Actualizar el saldo del usuario
                     cursor.execute("UPDATE Usuario SET Saldo_Actual = Saldo_Actual - %s WHERE ID_Usuario = %s",
@@ -77,7 +81,8 @@ class AccionDAO:
                         (user_id, accion_id, cantidad, cantidad)
                     )
                 else:
-                    print("Saldo insuficiente para realizar la compra.")
+                    print(Fore.RED + "\nSaldo insuficiente para realizar la compra." + Style.RESET_ALL)
+
 
             elif tipo == 'venta':
                 # Verificar acciones disponibles en el portafolio
@@ -86,14 +91,15 @@ class AccionDAO:
                 acciones_disponibles = cursor.fetchone()
 
                 if not acciones_disponibles or acciones_disponibles[0] < cantidad:
-                    print("No tienes suficientes acciones para vender.")
+                    print(Fore.RED + "\nNo tienes suficientes acciones para vender." + Style.RESET_ALL)
+
                     return
 
                 cursor.execute(
                     "INSERT INTO Transaccion (ID_Usuario, ID_Accion, Fecha, Tipo, Cantidad, Precio, Comision) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                     (user_id, accion_id, datetime.now(), 'venta', cantidad, precio, comision)
                 )
-                print("Venta realizada con éxito.")
+                print(Fore.YELLOW + "\nVenta realizada con éxito." + Style.RESET_ALL)
 
                 total_venta = float(precio * cantidad) - comision
                 cursor.execute("UPDATE Usuario SET Saldo_Actual = Saldo_Actual + %s WHERE ID_Usuario = %s",

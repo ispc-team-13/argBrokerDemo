@@ -1,5 +1,6 @@
 import mysql.connector
 from models.cotizacion import Cotizacion
+from colorama import Fore, Style, init
 
 class CotizacionDAO:
     def __init__(self, db_config):
@@ -18,7 +19,8 @@ class CotizacionDAO:
                                      precio_venta_actual, cantidad_venta_diaria, apertura, minimo_diario, maximo_diario, ultimo_cierre))
                 self.connection.commit()
             except mysql.connector.Error as err:
-                print(f"Error al crear la cotización: {err}")
+                print(Fore.RED + f"\nError al crear la cotización: {err}" + Style.RESET_ALL)
+
 
     def get_cotizacion(self, id_cotizacion):
         """Obtiene una cotización por su ID."""
@@ -43,7 +45,8 @@ class CotizacionDAO:
                                      precio_venta_actual, cantidad_venta_diaria, apertura, minimo_diario, maximo_diario, ultimo_cierre, id_cotizacion))
                 self.connection.commit()
             except mysql.connector.Error as err:
-                print(f"Error al actualizar la cotización: {err}")
+                print(Fore.RED + f"\nError al actualizar la cotización: {err}" + Style.RESET_ALL)
+
 
     def delete_cotizacion(self, id_cotizacion):
         """Elimina una cotización de la base de datos."""
@@ -53,7 +56,7 @@ class CotizacionDAO:
                 cursor.execute(sql, (id_cotizacion,))
                 self.connection.commit()
             except mysql.connector.Error as err:
-                print(f"Error al eliminar la cotización: {err}")
+                print(Fore.RED + f"\nError al eliminar la cotización: {err}" + Style.RESET_ALL)
 
     def close(self):
         """Cierra la conexión a la base de datos."""

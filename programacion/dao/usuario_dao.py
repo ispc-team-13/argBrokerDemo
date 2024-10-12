@@ -2,30 +2,43 @@ import mysql.connector
 import sys
 from models.usuario import Usuario
 from database import connect_db  # Importa la función de conexión
-
+from colorama import Fore, Style, init
 
 class UsuarioDAO:
     def __init__(self):
         """Inicializa la conexión a la base de datos."""
         self.connection = connect_db()
 
-    # Función para iniciar sesión
+    # Función para iniciar sesión con un límite de 3 intentos
     def login(self):
-        email = input("Ingresa tu email: ")
-        contrasena = input("Ingresa tu contraseña: ")
+        intentos = 0  # Contador de intentos
 
-        cursor = self.connection.cursor()
-        cursor.execute(
-            "SELECT * FROM Usuario WHERE Email = %s AND Contrasena = %s", (email, contrasena))
-        user = cursor.fetchone()
-        cursor.close()
+        while intentos < 3:
+            email = input("Ingresa tu email: ")
+            contrasena = input("Ingresa tu contraseña: ")
 
-        if user:
-            print(f"Bienvenido, {user[1]} {user[2]}!")
-            return user  # Retorna todos los datos del usuario
-        else:
-            print("Credenciales incorrectas. Inténtalo de nuevo.")
-            return None
+            try:
+                cursor = self.connection.cursor()
+                cursor.execute(
+                    "SELECT * FROM Usuario WHERE Email = %s AND Contrasena = %s", (email, contrasena))
+                user = cursor.fetchone()
+                cursor.close()
+
+                if user:
+                    print(Fore.GREEN + f"\nBienvenido, {user[1]} {user[2]}!" + Style.RESET_ALL)
+                    return user  # Retorna todos los datos del usuario si el login es exitoso
+                else:
+                    print(Fore.RED + "\nCredenciales incorrectas. Inténtalo de nuevo." + Style.RESET_ALL)
+                    intentos += 1
+                    print(Fore.RED + f"\nIntento {intentos} de 3." + Style.RESET_ALL)
+
+            except mysql.connector.Error as err:
+                print(Fore.RED + f"\nError de conexión a la base de datos: {err}" + Style.RESET_ALL)
+                return None  # En caso de error, retorna None
+
+        # Si se alcanzan 3 intentos fallidos, se cierra la aplicación
+        print(Fore.RED + "\nDemasiados intentos fallidos. La aplicación se cerrará." + Style.RESET_ALL)
+        sys.exit()  # Cierra la aplicación
 
     # Función para registrar un nuevo usuario
     def registrar_usuario(self):
@@ -33,7 +46,7 @@ class UsuarioDAO:
         apellido = input("Ingresa tu apellido: ")
         email = input("Ingresa tu email: ")
         contrasena = input("Ingresa tu contraseña: ")
-        saldo_inicial = 1000.0  # Saldo inicial para nuevos usuarios
+        saldo_inicial = 10000.0  # Saldo inicial para nuevos usuarios
 
         cursor = self.connection.cursor()
 
@@ -44,9 +57,10 @@ class UsuarioDAO:
                 (nombre, apellido, email, contrasena, saldo_inicial)
             )
             self.connection.commit()
-            print("Registro exitoso. ¡Ahora puedes iniciar sesión!")
+            print(Fore.YELLOW + f"\nRegistro exitoso. ¡Ahora puedes iniciar sesión!" + Style.RESET_ALL)
+
         except mysql.connector.Error as err:
-            print(f"Error al registrar el usuario: {err}")
+            print(Fore.RED + f"\nError al registrar el usuario: {err}" + Style.RESET_ALL)
             self.connection.rollback()
         finally:
             cursor.close()
@@ -68,12 +82,13 @@ class UsuarioDAO:
                 print(f"Tu contraseña es: {contrasena[0]}")
                 return  # Sale de la función si se encontró la contraseña
             else:
-                print("No se encontró ningún usuario con ese email.")
+                print(Fore.RED + f"\nNo se encontró ningún usuario con ese email." + Style.RESET_ALL)
+
                 intentos += 1
                 if intentos < 3:
-                    print(f"Intento {intentos} de 3.")
+                    print(Fore.RED + f"\nIntento {intentos} de 3." + Style.RESET_ALL)
 
-        print("Demasiados intentos fallidos. La aplicación se cerrará.")
+        print(Fore.RED + f"\nDemasiados intentos fallidos. La aplicación se cerrará." + Style.RESET_ALL)
         sys.exit()  # Cierra la aplicación
 
     def get_usuario_data(self, email):
