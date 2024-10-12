@@ -1,2 +1,3 @@
 mysql-connector-python # mysql conector con python
+configparser
 # pip install -r requirements.txt

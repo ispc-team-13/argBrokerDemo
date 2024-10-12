@@ -13,10 +13,12 @@ class PortafolioDAO:
             cursor.execute("""
                 SELECT p.ID_Portafolio, a.Simbolo, a.Nombre_Empresa, p.Cantidad, c.Precio_Compra_Actual, c.Precio_Venta_Actual,
                        (p.Cantidad * c.Ultimo_Operado) AS Valor_Comprometido,
-                       ((p.Cantidad * c.Ultimo_Operado) - p.Valor_Comprometido) AS Ganancia_Perdida
+                       ((p.Cantidad * c.Ultimo_Operado) - p.Valor_Comprometido) AS Ganancia_Perdida,
+                       t.Fecha  -- Añadir la fecha de la transacción
                 FROM Portafolio p
                 JOIN Accion a ON p.ID_Accion = a.ID_Accion
                 JOIN Cotizacion c ON p.ID_Accion = c.ID_Accion
+                JOIN Transaccion t ON p.ID_Usuario = t.ID_Usuario AND p.ID_Accion = t.ID_Accion  -- Añadir join con Transaccion
                 WHERE p.ID_Usuario = %s
             """, (user_id,))
             portafolio_items = cursor.fetchall()

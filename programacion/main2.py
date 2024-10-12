@@ -37,6 +37,7 @@ def main():
             print(f"Precio Venta Actual: {item['Precio_Venta_Actual']}")
             print(f"Valor Comprometido: {item['Valor_Comprometido']}")
             (f"Ganancia/Pérdida: {item['Ganancia_Perdida']}")
+            print(f"Fecha de la Transacción: {item['Fecha']}")
             print("-" * 50)
             
     usuario_dao = UsuarioDAO()  # Create an instance of UsuarioDAO
