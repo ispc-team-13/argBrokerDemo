@@ -45,6 +45,7 @@ class UsuarioDAO:
     def registrar_usuario(self):
         nombre = input("Ingresa tu nombre: ")
         apellido = input("Ingresa tu apellido: ")
+        cuil= input("Ingresa tu cuil: ")
         email = input("Ingresa tu email: ")
         contrasena = input("Ingresa tu contraseña: ")
         saldo_inicial = 10000.0  # Saldo inicial para nuevos usuarios
@@ -54,8 +55,8 @@ class UsuarioDAO:
         # Insertar el nuevo usuario en la base de datos
         try:
             cursor.execute(
-                "INSERT INTO Usuario (Nombre, Apellido, Email, Contrasena, Saldo_Actual) VALUES (%s, %s, %s, %s, %s)",
-                (nombre, apellido, email, contrasena, saldo_inicial)
+                "INSERT INTO Usuario (Nombre, Apellido, cuil, Email, Contrasena, Saldo_Actual) VALUES (%s, %s, %s, %s, %s)",
+                (nombre, apellido,cuil, email, contrasena, saldo_inicial)
             )
             self.connection.commit()
             print(Fore.YELLOW + f"\nRegistro exitoso. ¡Ahora puedes iniciar sesión!" + Style.RESET_ALL)
