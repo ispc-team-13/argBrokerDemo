@@ -55,7 +55,7 @@ class UsuarioDAO:
         # Insertar el nuevo usuario en la base de datos
         try:
             cursor.execute(
-                "INSERT INTO Usuario (Nombre, Apellido, cuil, Email, Contrasena, Saldo_Actual) VALUES (%s, %s, %s, %s, %s)",
+                "INSERT INTO Usuario (Nombre, Apellido, cuil, Email, Contrasena, Saldo_Actual) VALUES (%s, %s, %s, %s, %s, %s)",
                 (nombre, apellido,cuil, email, contrasena, saldo_inicial)
             )
             self.connection.commit()
