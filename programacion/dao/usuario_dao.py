@@ -91,3 +91,18 @@ class UsuarioDAO:
  
         print(Fore.RED + f"\nDemasiados intentos fallidos. La aplicación se cerrará." + Style.RESET_ALL)
         sys.exit()  # Cierra la aplicación
+
+    def get_usuario_data(self, email):
+        """Obtiene los datos de un usuario por su email."""
+        query = "SELECT Nombre, Apellido, CUIL, Email, Saldo_Actual, Total_Invertido FROM Usuario WHERE Email = %s"
+        cursor = self.connection.cursor()
+        cursor.execute(query, (email,))
+        user_data = cursor.fetchone()
+        cursor.close()
+        return user_data
+ 
+    def close(self):
+        """Cierra la conexión a la base de datos."""
+        if self.connection.is_connected():
+            self.connection.close()
+    
