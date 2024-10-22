@@ -106,3 +106,5 @@ UPDATE Usuario SET Saldo_Actual = Saldo_Actual * 1.10;
 -- Actualizar el saldo de todos los usuarios a un nuevo valor (por ejemplo, 2000.00)
 UPDATE Usuario SET Saldo_Actual = 2000.00;
 
+-- modificacion de comuna valor comprometido
+ALTER TABLE Portafolio MODIFY COLUMN Valor_Comprometido DECIMAL(10, 2) DEFAULT 0;
